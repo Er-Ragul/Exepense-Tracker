@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import LottieView from 'lottie-react-native';
 import { Input, Icon } from '@rneui/themed';
@@ -7,6 +7,7 @@ import { account } from '../../secret/appwriteConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';
 import { doLogin } from '../../redux/storageSlice';
+import { loginStyle } from '../styles/loginStyle';
 
 export default function Login({ navigation }) {
 
@@ -94,7 +95,10 @@ export default function Login({ navigation }) {
       }
     }
     catch(e) {
-      console.log('Error');
+      console.log('Catch Error');
+      Alert.alert('Server Error !', 'Please try again !', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ])
     }
   }
 
@@ -164,61 +168,3 @@ export default function Login({ navigation }) {
     </KeyboardAwareScrollView>
   );
 }
-
-const loginStyle = StyleSheet.create({
-  loginContainer: {
-    flex: 1,
-    alignItems: 'center',
-    marginTop: 30
-  },
-  animationContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  textContainer: {
-    width: '95%',
-    alignItems: 'flex-start',
-    marginVertical: 8
-  },
-  inputBoxContainer: {
-    width: '95%',
-    alignItems: 'flex-start',
-    marginVertical: 8,
-  },
-  forgotTextContainer: {
-    width: '95%',
-    alignItems: 'flex-end',
-    justifyContent: 'center'
-  },
-  buttonContainer: {
-    width: '95%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    marginVertical: 16
-  },
-  loginButtonOne: {
-    flexDirection: 'row',
-    padding: 12,
-    backgroundColor: 'rgba(78, 116, 289, 1)',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    borderRadius: 12,
-    marginVertical: 8
-  },
-  loginButtonTwo: {
-    flexDirection: 'row',
-    padding: 12,
-    backgroundColor: '#e4e1e1',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    borderRadius: 12,
-    marginVertical: 8
-  },
-  signupTextContainer: {
-    width: '100%',
-    alignItems: 'center',
-    marginVertical: 8
-  }
-});
