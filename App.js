@@ -10,10 +10,3 @@ export default function App() {
     </Provider>
   )
 }
-
-
-{/*
-    <Provider store={store}>
-      <Router />
-    </Provider>
-*/}
