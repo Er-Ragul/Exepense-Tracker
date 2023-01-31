@@ -17,15 +17,6 @@ client
     .setKey('596ad58c3962ed2a7c6d3ea654a22e3b56120013b14030ab9de25035d3fafb6f263126f43e1184a668a3b74715dfe0d173cd6f16cc2c4c8be46224b840e040b9e7b315c2501d65098b65ede2c734cd5a1559e3102f3d392b3d83070e8d99d536317c96b7120f6837010a0c02a36b744c40625170e6fe330f582d267434a3f25c')
 ;
 
-// Gitpod Appwrite
-/*
-client
-    .setEndpoint('http://34.67.184.14/v1')
-    .setProject('expense-tracker-1-2023')
-    .setKey('5693f6383db780ff67fd89d507c17f1fd628cb9d8e238138bf3cbd7cdfc90b0404fdf0e823ca33083e005774fed75e847ddbb752464936aad530aa61377e1b4df92999c32c62ebb65c6ae0c01b4d4a9ffd048027ce9b7387128546ae8dd241170197af8aee3e7a9915c9f628d38f986640af9a12e6a0027b26347d1b206b614d')
-;
-*/
-
 app.get('/', (req, res) => {
   res.send('Expense Tracker API Server Running Successfully !')
 })
