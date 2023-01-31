@@ -339,15 +339,29 @@ app.post('/query', (req, res) => {
         let total = 0
 
         response.documents.forEach((data) => {
-            if(data.pid == req.body.pid){
-                total = total +data.money_spent
-                
-                list.push({
-                    name: data.spent_for,
-                    date: data.date,
-                    time: data.time,
-                    amount: data.money_spent
-                })
+            if(req.body.date.length == 0){
+                if(data.pid == req.body.pid){
+                    total = total + data.money_spent
+                    
+                    list.push({
+                        name: data.spent_for,
+                        date: data.date,
+                        time: data.time,
+                        amount: data.money_spent
+                    })
+                }
+            }
+            else {
+                if(data.pid == req.body.pid && data.date == req.body.date){
+                    total = total + data.money_spent
+                    
+                    list.push({
+                        name: data.spent_for,
+                        date: data.date,
+                        time: data.time,
+                        amount: data.money_spent
+                    })
+                }
             }
         })
 
