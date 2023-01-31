@@ -1,5 +1,7 @@
 import { React, useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { Icon } from '@rneui/themed';
+import { DataTable } from 'react-native-paper';
 import { indiStyle } from '../styles/indiStyle';
 import { useSelector, useDispatch } from 'react-redux';
 import { callSearchWindow } from '../../redux/storageSlice';
@@ -37,32 +39,42 @@ export default function Individual({ route, navigation }){
                 <Text style={{fontSize: 16, color: 'rgba(78, 116, 289, 1)'}}>Total Spent on {name}</Text>
                 <Text style={{ fontWeight: 'bold', fontSize: 60, color: 'rgba(78, 116, 289, 1)' }}>{total} ₹</Text>
             </View>
-            <View style={indiStyle.heading}>
-                <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Date</Text>
-                <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Time</Text>
-                <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Spent</Text>
+            <View>
+            <DataTable style={indiStyle.table}>
+                <DataTable.Header style={indiStyle.heading}>
+                    <DataTable.Title>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20}}>Date</Text>
+                    </DataTable.Title>
+                    <DataTable.Title>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20}}>Time</Text>
+                    </DataTable.Title>
+                    <DataTable.Title>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20}}>Spent</Text>
+                    </DataTable.Title>
+                </DataTable.Header>
+            </DataTable>
             </View>
             <View style={indiStyle.list}>
                 <FlatList
                     data={list}
                     renderItem={({item}) => (
-                    <View style={indiStyle.contentStyle}>
-                        <Text>{item.date}</Text>
-                        <Text>{item.time}</Text>
-                        <Text>{item.amount} ₹</Text>
-                    </View>
+                        <DataTable style={indiStyle.table}>
+                            <DataTable.Row>
+                                <DataTable.Cell>{item.date}</DataTable.Cell>
+                                <DataTable.Cell>{item.time}</DataTable.Cell>
+                                <DataTable.Cell>{item.amount}</DataTable.Cell>
+                            </DataTable.Row>
+                        </DataTable>
                     )}
                 />
             </View>
             <View style={indiStyle.buttons}>
-                <TouchableOpacity style={indiStyle.buttonStyle}
-                onPress={() => navigation.navigate('Search')}>
-                    <Text style={{ color: 'white', fontWeight: 'bold' }}>BACK TO SEARCH</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={indiStyle.buttonStyle}
-                onPress={() => dispatch(callSearchWindow(false))}>
-                    <Text style={{ color: 'white', fontWeight: 'bold' }}>BACK TO MAIN</Text>
-                </TouchableOpacity>
+                <Icon raised name='home' 
+                type='ionicon' color='rgba(78, 116, 289, 1)'
+                onPress={() => dispatch(callSearchWindow(false))}/>
+                <Icon raised name='search' 
+                type='ionicon' color='rgba(78, 116, 289, 1)'
+                onPress={() => navigation.navigate('Search')} />
             </View>
         </View>
     )
