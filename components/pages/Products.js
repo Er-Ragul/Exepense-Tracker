@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, Alert } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Image, Alert } from "react-native";
+import { productStyle } from "../styles/productStyle";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { ID } from "appwrite";
 import { Input, Icon, Button } from '@rneui/themed';
 import { useSelector, useDispatch } from 'react-redux';
 import { apiUrl } from "../../secret/appwriteConfig";
@@ -116,42 +116,3 @@ export default function Products(){
         </KeyboardAwareScrollView>
     )
 }
-
-const productStyle = StyleSheet.create({
-    container: {
-        flex: 1,
-        marginTop: 120,
-        marginHorizontal: 16,
-        justifyContent: 'center',
-        flexDirection: 'column'
-    },
-    header: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginVertical: 12
-    },
-    inputBox: {
-        flex: 2,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginVertical: 12
-    },
-    listViewBox: {
-        flex: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginVertical: 12
-    },
-    listView: {
-        margin: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    buttonBox: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginVertical: 12
-    }
-})

@@ -22,8 +22,3 @@ export const storageSlice = createSlice({
 
 export const { doLogin, productUpdaterFunction, callSearchWindow } = storageSlice.actions
 export default storageSlice.reducer
-
-/**
- * Id : '5OtTRxJWDgY1dhqvfy5ixJigaO53'
- * 
- */
