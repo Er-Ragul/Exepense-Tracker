@@ -7,7 +7,7 @@ import axios from 'axios';
 
 export default function Individual({ route, navigation }){
 
-    let { id, name, url } = route.params
+    let { id, name, url, dates } = route.params
     let uid = useSelector((state) => state.variable.uid)
     let dispatch = useDispatch()
 
@@ -18,7 +18,8 @@ export default function Individual({ route, navigation }){
         axios.post(`${apiUrl}/query`, {
             database: uid,
             collection: uid+'-exp',
-            pid: id
+            pid: id,
+            date: dates
           })
           .then(function (response) {
             setList(response.data.list)

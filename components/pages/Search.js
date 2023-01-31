@@ -16,6 +16,8 @@ export default function Search({ navigation }){
     let [productList, setProductList] = useState([])
     let [searchProduct, setSearchProduct] = useState('')
     let [calendarModal, setCalendarModal] = useState(false)
+    let [dates, setDates] = useState([])
+    let [select, setSelect] = useState({})
 
     useEffect(() => {
         axios.post(`${apiUrl}/getproducts`, {
@@ -50,6 +52,25 @@ export default function Search({ navigation }){
             console.log(error);
           });
     }, [searchProduct])
+
+    let selectDate = (date, dateString) => {
+        setSelect(prevDate => ({
+            ...prevDate,
+            [dateString]: {selected: true, selectedColor: '#34ebb4'}
+        }))
+        setDates(prevDate => [date, ...prevDate])
+    }
+
+    let processQuery = (id, name, url) => {
+        navigation.navigate('Individual', {
+            id, 
+            name, 
+            url,
+            dates
+        })
+        setDates([])
+        setSelect({})
+    }
 
     return(
         <View style={searchStyle.container}>
@@ -90,11 +111,7 @@ export default function Search({ navigation }){
                     numColumns={2}
                     renderItem={({ item }) => (
                         <TouchableOpacity style={searchStyle.listView}
-                        onPress={() => navigation.navigate('Individual', {
-                            id: item.id, 
-                            name: item.name, 
-                            url: item.url
-                        })}>
+                        onPress={(e) => processQuery(item.id, item.name, item.url)}>
                         <Image source={{uri: item.url}} style={{width: 40, height:40}}/>
                         <Text style={{fontWeight: 'bold', fontSize: 18, marginLeft: 8}}>{item.name}</Text>
                         </TouchableOpacity>
@@ -106,8 +123,9 @@ export default function Search({ navigation }){
             <View style={searchStyle.calendarModal}>
                 <Calendar 
                   onDayLongPress={day => {
-                    console.log('selected day', day.day+'-'+day.month+'-'+day.year);
-                  }}/>
+                    selectDate(day.day+'-'+day.month+'-'+day.year, day.dateString)
+                  }}
+                  markedDates={select}/>
                 <View style={searchStyle.calendarClose}>
                     <TouchableOpacity
                     style={{ 
