@@ -1,10 +1,11 @@
 import { React, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, Modal } from 'react-native';
 import { Input, Icon } from '@rneui/themed';
 import { useDispatch, useSelector } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { callSearchWindow } from '../../redux/storageSlice';
 import { apiUrl } from '../../secret/appwriteConfig';
+import { Calendar } from 'react-native-calendars';
 import axios from 'axios';
 
 export default function Search({ navigation }){
@@ -14,6 +15,7 @@ export default function Search({ navigation }){
 
     let [productList, setProductList] = useState([])
     let [searchProduct, setSearchProduct] = useState('')
+    let [calendarModal, setCalendarModal] = useState(false)
 
     useEffect(() => {
         axios.post(`${apiUrl}/getproducts`, {
@@ -50,49 +52,78 @@ export default function Search({ navigation }){
     }, [searchProduct])
 
     return(
-            <View style={searchStyle.container}>
-                <KeyboardAwareScrollView scrollEnabled={true} contentContainerStyle={{ backgroundColor: 'white' }}>
-                <View style={searchStyle.menu}>
-                    <View style={{ flex: 1 }}>
-                        <Text style={{ fontSize: 24, fontWeight: 'bold', color: 'rgba(78, 116, 289, 1)' }}>Filter</Text>
-                    </View>
-                    <View style={searchStyle.menuButton}>
-                        <TouchableOpacity style={{ padding: 8, borderRadius: 12, backgroundColor: '#eb4034' }}
-                        onPress={() => setSearchProduct('')}>
-                            <Text style={{ color: 'white', fontWeight: 'bold' }}>CLEAR</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{ padding: 8, borderRadius: 12, backgroundColor: 'rgba(78, 116, 289, 1)' }}
-                        onPress={() => dispatch(callSearchWindow(false))}>
-                            <Text style={{ color: 'white', fontWeight: 'bold' }}>BACK</Text>
-                        </TouchableOpacity>
-                    </View>
+        <View style={searchStyle.container}>
+            <KeyboardAwareScrollView scrollEnabled={true} contentContainerStyle={{ backgroundColor: 'white' }}>
+            <View style={searchStyle.menu}>
+                <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 24, fontWeight: 'bold', color: 'rgba(78, 116, 289, 1)' }}>Filter</Text>
                 </View>
-                <Input
-                    placeholder="Search Expense"
-                    onChangeText={(e) => setSearchProduct(e)}
-                    value={searchProduct}
-                    inputContainerStyle={ searchStyle.inputBox }
-                />
-                <View style={searchStyle.groupList}>
-                    <FlatList
-                        scrollEnabled={false}
-                        data={productList}
-                        numColumns={2}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity style={searchStyle.listView}
-                            onPress={() => navigation.navigate('Individual', {
-                                id: item.id, 
-                                name: item.name, 
-                                url: item.url
-                            })}>
-                            <Image source={{uri: item.url}} style={{width: 40, height:40}}/>
-                            <Text style={{fontWeight: 'bold', fontSize: 18, marginLeft: 8}}>{item.name}</Text>
-                            </TouchableOpacity>
-                        )}
-                    />
+                <View style={searchStyle.menuButton}>
+                    <TouchableOpacity style={{ padding: 8, borderRadius: 12, backgroundColor: '#eb4034' }}
+                    onPress={() => setSearchProduct('')}>
+                        <Text style={{ color: 'white', fontWeight: 'bold' }}>CLEAR</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ padding: 8, borderRadius: 12, backgroundColor: 'rgba(78, 116, 289, 1)' }}
+                    onPress={() => dispatch(callSearchWindow(false))}>
+                        <Text style={{ color: 'white', fontWeight: 'bold' }}>BACK</Text>
+                    </TouchableOpacity>
                 </View>
-                </KeyboardAwareScrollView>
             </View>
+            <Input
+                placeholder="Search Expense"
+                onChangeText={(e) => setSearchProduct(e)}
+                value={searchProduct}
+                inputContainerStyle={ searchStyle.inputBox }
+                rightIcon={
+                    <Icon 
+                    type='ionicon'
+                    name='calendar'
+                    color='#777778'
+                    onPress={() => setCalendarModal(true)}
+                    />
+                }
+            />
+            <View style={searchStyle.groupList}>
+                <FlatList
+                    scrollEnabled={false}
+                    data={productList}
+                    numColumns={2}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity style={searchStyle.listView}
+                        onPress={() => navigation.navigate('Individual', {
+                            id: item.id, 
+                            name: item.name, 
+                            url: item.url
+                        })}>
+                        <Image source={{uri: item.url}} style={{width: 40, height:40}}/>
+                        <Text style={{fontWeight: 'bold', fontSize: 18, marginLeft: 8}}>{item.name}</Text>
+                        </TouchableOpacity>
+                    )}
+                />
+            </View>
+            </KeyboardAwareScrollView>
+            <Modal visible={calendarModal}>
+            <View style={searchStyle.calendarModal}>
+                <Calendar 
+                  onDayLongPress={day => {
+                    console.log('selected day', day.day+'-'+day.month+'-'+day.year);
+                  }}/>
+                <View style={searchStyle.calendarClose}>
+                    <TouchableOpacity
+                    style={{ 
+                    borderWidth: 1, 
+                    borderColor: '#eb4034', 
+                    padding: 10, 
+                    backgroundColor: '#eb4034',
+                    borderRadius: 6
+                    }}
+                    onPress={() => setCalendarModal(false)}>
+                    <Text style={{fontWeight: 'bold', fontSize: 18, color: 'white'}}>CLOSE</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            </Modal>
+        </View>
     )
 }
 
@@ -134,5 +165,14 @@ const searchStyle = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#d1d1d1',
         borderRadius: 12,
+    },
+    calendarModal: {
+        flex: 1,
+        flexDirection: 'column'
+      },
+    calendarClose: {
+        marginTop: 30,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 })
