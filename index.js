@@ -148,11 +148,12 @@ app.post('/getdata', (req, res) => {
     let tempDate = theDate.getDate().toString()+'-'+`${theDate.getMonth() + 1}`+'-'+ theDate.getFullYear().toString()
     let total = 0
     let todayData = []
-    const promise = databases.listDocuments(req.body.database, req.body.collection);
+    const promise = databases.listDocuments(req.body.database, req.body.collection, [
+        sdk.Query.equal('date', [tempDate])
+    ]);
 
     promise.then(function (response) {
         response.documents.forEach((data) => {
-        if(data.date == tempDate){
             total = total + data.money_spent
             todayData.push({
                 icon: data.icon,
@@ -161,7 +162,6 @@ app.post('/getdata', (req, res) => {
                 amount: data.money_spent,
                 date: data.date
             })
-        }
       })
 
     res.send({todayTotal: total, todayList: todayData})  
@@ -171,37 +171,36 @@ app.post('/getdata', (req, res) => {
 })
 
 app.post('/weekdata', (req, res) => {
-    const promise = databases.listDocuments(req.body.database, req.body.collection);
+
+    let week = []
+    let curr = new Date 
+
+    for (let i = 0; i <= 6; i++) {
+        let first = curr.getDate() - curr.getDay() + i 
+        let day = new Date(curr.setDate(first)).toISOString().slice(0, 10)
+        day = day.split('-')
+        day = day[2]+'-'+day[1]+'-'+day[0]
+        week.push(dateCooker(day))
+    }
+
+    const promise = databases.listDocuments(req.body.database, req.body.collection, [
+        sdk.Query.equal('date', week)
+    ]);
 
     promise.then(function (response) {
-
-        let curr = new Date 
-        let week = []
         let spentList = []
         let tempHeight = []
         let total = 0
-    
-        for (let i = 0; i <= 6; i++) {
-          let first = curr.getDate() - curr.getDay() + i 
-          let day = new Date(curr.setDate(first)).toISOString().slice(0, 10)
-          day = day.split('-')
-          day = day[2]+'-'+day[1].replace('0','')+'-'+day[0]
-          week.push(day)
-        }
 
         response.documents.forEach((data) => {
-            week.forEach((main) => {
-              if(main == data.date){
-                total = total + data.money_spent
-                spentList.push({
-                    icon: data.icon,
-                    spent: data.spent_for,
-                    time : data.time,
-                    amount: data.money_spent,
-                    date: data.date,
-                    height: 0
-                })
-              }
+            total = total + data.money_spent
+            spentList.push({
+                icon: data.icon,
+                spent: data.spent_for,
+                time : data.time,
+                amount: data.money_spent,
+                date: data.date,
+                height: 0
             })
         })
 
@@ -286,7 +285,9 @@ app.post('/yeardata', (req, res) => {
     let yearTotal = 0
     let tempHeight = []
 
-    const promise = databases.listDocuments(req.body.database, req.body.collection);
+    const promise = databases.listDocuments(req.body.database, req.body.collection, [
+        sdk.Query.limit(100)
+    ]);
 
     promise.then(function (response) {
         let curr = new Date
@@ -441,3 +442,26 @@ app.get('/geticons', (req, res) => {
 app.listen(3000, () => {
   console.log('Listening on 3000')
 })
+
+/* Date process function */
+function dateCooker(pass){
+    let date = pass.split('')
+    let bakedDate = ''
+
+    for(i=0;i<date.length;i++){
+        if(i == 0 && date[0] == '0'){
+            delete date[0]
+        }
+        else if(i == 3 && date[3] == '0'){
+            delete date[3]
+        }
+    }
+
+    date.map((value) => {
+        if(value != undefined){
+            bakedDate = bakedDate + value
+        }
+    })
+
+    return bakedDate
+}
