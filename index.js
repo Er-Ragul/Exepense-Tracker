@@ -121,6 +121,7 @@ app.post('/createdb', (req, res) => {
 
             dateAttribute.then(function (response) {
                 console.log('Date attribute created.');
+
             }, function (error) {
                 console.log(error);
             });
@@ -130,6 +131,7 @@ app.post('/createdb', (req, res) => {
 
             noteAttribute.then(function (response) {
                 console.log('Note attribute created.');
+
             }, function (error) {
                 console.log(error);
             });
@@ -141,6 +143,31 @@ app.post('/createdb', (req, res) => {
     });
 
     res.send('Your ID : ' + req.body.id)
+})
+
+app.post('/createindex', (req, res) => {
+    try{
+        const pidIndex = databases.createIndex(req.body.id, `${req.body.id+'-'+'exp'}`, 'pid', 'key', ['pid']);
+
+        pidIndex.then(function (response) {
+            console.log('Pid index created.');
+        }, function (error) {
+            console.log('Pid index not created.');
+        });
+    
+        const dateIndex = databases.createIndex(req.body.id, `${req.body.id+'-'+'exp'}`, 'date', 'key', ['date']);
+    
+        dateIndex.then(function (response) {
+            console.log('Date index created.');
+        }, function (error) {
+            console.log('Date index not created.');
+        });
+
+        res.send('Success. Index created')
+    }
+    catch(e){
+        res.send('Failed. Index not created')
+    }
 })
 
 app.post('/getdata', (req, res) => {
