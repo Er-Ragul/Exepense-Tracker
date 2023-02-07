@@ -8,6 +8,7 @@ import { account } from '../../secret/appwriteConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';
 import { doLogin } from '../../redux/storageSlice';
+import { apiUrl } from '../../secret/appwriteConfig';
 import axios from "axios";
 
 export default function Signup({ navigation }) {
@@ -48,7 +49,7 @@ export default function Signup({ navigation }) {
           
           promise.then(function (response) {
             let Response = response.$id
-            axios.post('http://34.67.184.14:3000/createdb', {
+            axios.post(`${apiUrl}/createdb`, {
               id: mobile
             })
             .then(function (response) {

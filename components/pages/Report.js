@@ -49,6 +49,23 @@ export default function Report({ navigation }) {
       .catch(function (error) {
         console.log(error);
       });
+
+      try{
+        axios.post(`${apiUrl}/createindex`, {
+          id: uid
+        })
+        .then(function (response) {
+          console.log('Index Created');
+        })
+        .catch(function (error) {
+          Alert.alert('Server Error', 'Please try again !', [
+            { text: 'OK', onPress: () => console.log('OK Pressed') },
+          ])
+        })
+      }
+      catch(e){
+        console.log('Index Not Created');
+      }
   }, [])
 
   useEffect(() => {
